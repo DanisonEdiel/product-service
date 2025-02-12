@@ -1,0 +1,33 @@
+services:
+  product-service:
+    container_name: product-service
+    image: product-java:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_APPLICATION_NAME=product-service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://product-db:5432/product_service_db
+      - SPRING_DATASOURCE_USERNAME=user1
+      - SPRING_DATASOURCE_PASSWORD=secret
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+    ports:
+      - "8080:8080"
+    depends_on:
+      - product-db
+
+  product-db:
+    container_name: product-db
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_DB=product_service_db
+      - POSTGRES_USER=user1
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - product_db_data:/var/lib/postgresql/data
+
+volumes:
+  product_db_data:
